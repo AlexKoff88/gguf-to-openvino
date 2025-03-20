@@ -14,10 +14,7 @@ MIN_CACHE_CAPACITY = 20_000
 VOCAB_SIZE_CACHE_PROPORTION = 0.2
 MAX_LENGTH = 8192  # check the default constant in the original code
 
-# https://github.com/ggml-org/llama.cpp/blob/8551c44d840a7db50adb958ccaf464dc3ded82e7/include/llama.h#L79
-pretokenizers_mapping = {
-    "smollm": lambda x: x,
-}
+
 split_regex_mapping = {
     # https://github.com/ggml-org/llama.cpp/blob/8551c44d840a7db50adb958ccaf464dc3ded82e7/src/llama-vocab.cpp#L336
     "smollm": [
