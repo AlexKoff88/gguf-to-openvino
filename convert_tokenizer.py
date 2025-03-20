@@ -18,16 +18,14 @@ MAX_LENGTH = 8192  # check the default constant in the original code
 pretokenizers_mapping = {
     "smollm": lambda x: x,
 }
-# https://github.com/ggml-org/llama.cpp/blob/8551c44d840a7db50adb958ccaf464dc3ded82e7/src/llama-vocab.cpp#L279
 split_regex_mapping = {
+    # https://github.com/ggml-org/llama.cpp/blob/8551c44d840a7db50adb958ccaf464dc3ded82e7/src/llama-vocab.cpp#L336
     "smollm": [
         "\\p{N}",
-        # "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)"
-        # "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+"
-        r"'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+"
+        "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)"
     ],
 }
-split_behavior_mapping = {
+split_behaviour_mapping = {
     "\\p{N}": "isolate",
     "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)": "isolate",
 }
@@ -219,7 +217,7 @@ def create_tokenizer_from_config(tokenizer_config: dict[str, Any]) -> tuple[ov.M
             "RegexSplit",
             outputs,
             {
-                "behavior": split_behavior_mapping.get(split_re, "isolate"),
+                "behaviour": split_behaviour_mapping.get(split_re, "isolate"),
                 "invert": False,
                 "max_splits": -1,
             }
