@@ -269,7 +269,7 @@ def create_tokenizer_from_config(tokenizer_config: dict[str, Any]) -> tuple[ov.M
     #### detokenization model #####
     ###############################
 
-    detokenizer_input = op.Parameter(Type.i32, ov.PartialShape(["?", "?"]))
+    detokenizer_input = op.Parameter(Type.i64, ov.PartialShape(["?", "?"]))
 
     # vocab decoder
     vocab = vocab_parser_mapping[tokenizer_config["model"]](tokenizer_config["tokens"])
