@@ -300,6 +300,17 @@ def create_tokenizer_from_config(tokenizer_config: dict[str, Any]) -> tuple[ov.M
     detokenizer = ov.Model(outputs, [detokenizer_input], "detokenizer")
     detokenizer.output().tensor.add_names({"string_output"})
 
-    # todo: add relevant rt_info
+    # todo: add more relevant rt_info
+    for key, value in tokenizer_config.items():
+        if key in ("token_type", "tokens", "merges"):
+            continue
+
+        try:
+            value = value.item()
+        except AttributeError:
+            pass
+
+        tokenizer.set_rt_info(value, key)
+        detokenizer.set_rt_info(value, key)
 
     return tokenizer, detokenizer
