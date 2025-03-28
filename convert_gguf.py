@@ -526,17 +526,9 @@ def make_embedding(key, input, consts, qtype):
     return inputs_embeds, embed_f32
 
 
-def save_tokenizer(orig_model_path, ov_model_path):
+def save_original_tokenizer(orig_model_path, ov_model_path):
     tokenizer = AutoTokenizer.from_pretrained(orig_model_path)
     tokenizer.save_pretrained(ov_model_path)
-
-    from openvino_tokenizers import convert_tokenizer
-
-    converted = convert_tokenizer(tokenizer, with_detokenizer=True)
-    t, d = ov.compile_model(converted[0]), ov.compile_model(converted[1])
-    t_out = t(["test"])
-    print("\n".join(map(str, t_out.values())))
-
 
 
 def layer(configs, consts, layer_idx, hidden_states, attn_mask, causal_mask, position_ids, rope_const, beam_idx, batch_dim, hidden_dim, cos_sin_cached, output_shape):
@@ -822,11 +814,6 @@ if __name__ == "__main__":
     print("detokenizer:")
     show_model(detokenizer)
 
-    t, d = ov.compile_model(tokenizer), ov.compile_model(detokenizer)
-    t_out = t(["test"])
-    print("\n".join(map(str, t_out.values())))
-    # print(d(t_out["input_ids"]))
-
     print(f"serialize ov tokenizer and detokenizer to '{args.ov_model_path}'...")
     beg = time.time()
     serialize(tokenizer, os.path.join(args.ov_model_path, OV_TOKENIZER_FILE_NAME))
@@ -838,7 +825,7 @@ if __name__ == "__main__":
     model_id = args.model_id or config["model_id"]  # "HuggingFaceTB/SmolLM2-135M" #"meta-llama/Llama-2-7b-chat-hf"
     if model_id:
         print(f"save original tokenzier to '{args.ov_model_path}' ...")
-        save_tokenizer(model_id, args.ov_model_path)
+        save_original_tokenizer(model_id, args.ov_model_path)
         config = AutoConfig.from_pretrained(model_id)
         config.save_pretrained(args.ov_model_path)
     else:
